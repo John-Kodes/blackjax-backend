@@ -29,6 +29,9 @@
     "eslint-plugin-react": "^7.25.1",
     "prettier": "^2.3.2"
   },
+  "engines": {
+    "node": ">=10.0.0"
+  },
   "scripts": {
     "start": "SET NODE_ENV=development&&nodemon server.js ",
     "start:prod": "SET NODE_ENV=production&&nodemon server.js ",
