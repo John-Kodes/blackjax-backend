@@ -1,9 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 
+const AppError = require("./utils/appError");
+const globalErrorHandler = require("./controllers/errorController");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
@@ -13,7 +16,13 @@ const app = express();
 // Development logging
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
-// TODO: Implementing a rate limiter
+// RATE LIMITER
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000, // Time span
+  message: "Too many requests from this IP, Please try again in an hour!",
+});
+app.use("/api", limiter);
 
 // BODY PARSER & READING DATA FROM BODY INTO REQ.BODY
 app.use(express.json({ limit: "10kb" })); // req.body max size is 10kb
@@ -27,5 +36,13 @@ app.use(xss()); // converts html symbols like <> to their HTML entities.
 
 // API ROUTES: Mounting Routes ___________
 app.use("/api/v1/users", userRoutes);
+
+// 404 route handler
+app.all("*", (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// implementing global error handler
+app.use(globalErrorHandler);
 
 module.exports = app;
