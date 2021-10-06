@@ -14,6 +14,7 @@ const signToken = (id) =>
 
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
+  console.log(user._id, token);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -27,6 +28,8 @@ const createSendToken = (user, statusCode, res) => {
 
   user.password = undefined;
 
+  console.log("bruh", token);
+
   res.status(statusCode).json({
     status: "success",
     token,
@@ -38,7 +41,8 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
-    name: req.body.name,
+    username: req.body.username,
+    color: req.body.color,
     email: req.body.email,
     password: req.body.password,
     passwordChangedAt: req.body.passwordChangedAt,

@@ -1,20 +1,11 @@
-const User = require("../models/userModel");
+const catchAsync = require("../utils/catchAsync");
+// const AppError = require("../utils/appError");
+// const User = require("../models/userModel");
 
-exports.test = (req, res, next) => {
-  console.log("i am running");
-  res.status(200).json({ status: "success", message: "yo" });
-};
+exports.getAllUsers = catchAsync(async (req, res, next) => {});
 
-exports.createUser = async (req, res, next) => {
-  console.log("creating user...");
-  const { email, password, username } = req.body;
+exports.getMe = catchAsync(async (req, res, next) => {});
 
-  const user = await User.create({ email, password, username });
+exports.updateMe = catchAsync(async (req, res, next) => {});
 
-  res.status(201).json({
-    status: "success",
-    data: {
-      user,
-    },
-  });
-};
+exports.deleteMe = catchAsync(async (req, res, next) => {});
