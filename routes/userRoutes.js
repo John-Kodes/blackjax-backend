@@ -5,13 +5,15 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.post("/signup", authController.signup); // working
-router.post("/login", authController.login); // working
-router.get("/logout", authController.logout); // working
+router.post("/signup", authController.signup);
+router.post("/login", authController.login);
+router.get("/logout", authController.logout);
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
-router.get("/", userController.getAllUsers);
+router.get("/", userController.getAllUsers); // workin but may delete later
+
+router.get("/getLeaderboard/page/:pageNum", userController.getLeaderboard);
 
 router.use(authController.protect);
 
