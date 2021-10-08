@@ -7,6 +7,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
+    results: users.length,
     data: {
       users,
     },
@@ -54,8 +55,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
-  res.status(200).json({
+  await User.findOneAndUpdate(req.user._id, { active: false });
+
+  res.status(204).json({
     status: "success",
-    message: "Route handler not yet created",
+    data: null,
   });
 });

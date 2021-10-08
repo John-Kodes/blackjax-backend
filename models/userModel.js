@@ -37,6 +37,11 @@ const userSchema = mongoose.Schema({
       "Please provide a valid hex color. (example: #00ffa6)",
     ],
   },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false, // hidden when queried
+  },
   highScore: Number,
   currentScore: Number,
   passwordChangedAt: Date,
@@ -45,6 +50,12 @@ const userSchema = mongoose.Schema({
 });
 
 //// MIDDLEWARE ////
+// Only outputs users that are active
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 // encrypts password for newly created accounts
 userSchema.pre("save", async function (next) {
   // .isModified(field): Checks if a field has been modified in a document
