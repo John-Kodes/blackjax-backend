@@ -14,7 +14,6 @@ const signToken = (id) =>
 
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
-  console.log(user._id, token);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -27,8 +26,6 @@ const createSendToken = (user, statusCode, res) => {
   res.cookie("jwt", token, cookieOptions);
 
   user.password = undefined;
-
-  console.log("bruh", token);
 
   res.status(statusCode).json({
     status: "success",
@@ -99,10 +96,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // verifying the token
-  // jwt.verify() returns a promise. The params are the token we want to verify and the secret key.
-  // promisfy() comes from the node module "util". It returns a version Promise of your function. The last param must be a callback, in this case jwt.verify(). The callback must follow Node's callback style (err, result)
-  // The second () is just used to immediately call the function with the arguments inside.
-  // decoded stores the payload from the JWT
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   const currentUser = await User.findById(decoded.id);
@@ -120,7 +113,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // Grants access to protected route and also adds user data to req. We can use the req to send data from middleware to middleware
+  // Granting user access and passing user data through req object
   req.user = currentUser;
   next();
 });

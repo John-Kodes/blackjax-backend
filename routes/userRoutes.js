@@ -19,4 +19,12 @@ router.use(authController.protect);
 
 router.patch("/updatePassword", authController.updatePassword);
 
+// update currentHigh
+
+router
+  .route("/me")
+  .get(userController.getMe)
+  .patch(userController.updateMe)
+  .delete(userController.deleteMe);
+
 module.exports = router;

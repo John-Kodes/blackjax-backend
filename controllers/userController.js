@@ -1,5 +1,5 @@
 const catchAsync = require("../utils/catchAsync");
-// const AppError = require("../utils/appError");
+const AppError = require("../utils/appError");
 const User = require("../models/userModel");
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
@@ -24,20 +24,22 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
 exports.getMe = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
-    message: "Route handler is not made yet",
+    data: {
+      user: req.user,
+    },
   });
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
-    message: "Route handler is not made yet",
+    message: "Route handler not yet created",
   });
 });
 
 exports.deleteMe = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
-    message: "Route handler is not made yet",
+    message: "Route handler not yet created",
   });
 });
