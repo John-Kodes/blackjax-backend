@@ -31,9 +31,25 @@ exports.getMe = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
+  if (req.body.password)
+    return next(
+      new AppError(
+        "This route is not for password updates. Please use /updatePassword",
+        400
+      )
+    );
+
+  const { username, color } = req.body;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    { username, color },
+    { new: true, runValidators: true }
+  );
+
   res.status(200).json({
     status: "success",
-    message: "Route handler not yet created",
+    data: { updatedUser },
   });
 });
 
