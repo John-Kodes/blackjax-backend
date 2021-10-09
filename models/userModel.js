@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin"],
+    enum: ["guest", "user", "admin"],
     default: "user",
   },
   username: {
@@ -42,9 +42,18 @@ const userSchema = mongoose.Schema({
     default: true,
     select: false, // hidden when queried
   },
-  highScore: Number,
-  currentScore: Number,
-  passwordChangedAt: Date,
+  currentScore: {
+    type: Number,
+    default: 1000,
+  },
+  highScore: {
+    type: Number,
+    default: 1000,
+  },
+  passwordChangedAt: {
+    type: Date,
+    select: false,
+  },
   passwordResetToken: String,
   passwordResetExpires: Date,
 });

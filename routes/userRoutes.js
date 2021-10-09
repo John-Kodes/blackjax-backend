@@ -13,13 +13,14 @@ router.patch("/resetPassword/:token", authController.resetPassword);
 
 router.get("/", userController.getAllUsers); // workin but may delete later
 
-router.get("/getLeaderboard/page/:pageNum", userController.getLeaderboard);
+router.get("/getLeaderboard/page/:pageNum", userController.getLeaderboard); // TODO:
 
 router.use(authController.protect);
 
-router.patch("/updatePassword", authController.updatePassword);
+// update currentScore (conditionally update highScore)
+router.patch("/updateScore", userController.updateScore);
 
-// update currentHigh
+router.patch("/updatePassword", authController.updatePassword);
 
 router
   .route("/me")

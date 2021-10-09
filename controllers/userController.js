@@ -22,6 +22,38 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.updateScore = catchAsync(async (req, res, next) => {
+  if (!req.body.currentScore)
+    return next(new AppError("currentScore must be provided", 404));
+
+  if (!req.body.adminPass || !req.body.adminPass === process.env.ADMIN_PASS)
+    return next(
+      new AppError(
+        "valid adminPass must be provided to update a user's score",
+        403
+      )
+    );
+
+  const data = { currentScore: req.body.currentScore };
+  const user = await User.findById(req.user._id);
+
+  if (data.currentScore > user.highScore) {
+    data.highScore = req.body.currentScore;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, data, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user: updatedUser,
+    },
+  });
+});
+
 exports.getMe = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
