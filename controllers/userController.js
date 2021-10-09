@@ -14,11 +14,48 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-// url/api/v1/users/getLeaderboard/page/:pageNum (length = 20)
+// url/api/v1/users/getLeaderboard?page=1&sort=asc (length = 20)
+// TODO: still need to implement pagination and be sure to have the ranks be accurate on different pages
 exports.getLeaderboard = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 20;
+  const sort = req.query.sort === "asc";
+  const skip = (page - 1) * limit;
+
+  const sortValue = (str) => {
+    if (!sort) return str;
+    return str.replace(/-/g, "");
+  };
+
+  const numUsers = await User.countDocuments();
+
+  if (skip >= numUsers)
+    return next(new AppError("This page does not exist", 404));
+
+  const leaderboard = await User.find()
+    .sort(sortValue("-highScore -currentScore"))
+    .select("username color currentScore highScore rank")
+    .skip(skip)
+    .limit(limit);
+
+  const findRank = (i, arrLength) => {
+    if (!sort) return i + 1 + limit * (page - 1);
+    return arrLength - (i + limit * (page - 1));
+  };
+
+  // Adding rank to each user
+  const leaderboardRanks = leaderboard.map((user, i) => ({
+    ...user._doc,
+    rank: findRank(i, numUsers),
+  }));
+
   res.status(200).json({
     status: "success",
-    message: "Route handler is not made yet",
+    page,
+    results: leaderboardRanks.length,
+    data: {
+      leaderboard: leaderboardRanks,
+    },
   });
 });
 

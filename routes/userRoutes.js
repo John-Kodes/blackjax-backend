@@ -13,7 +13,7 @@ router.patch("/resetPassword/:token", authController.resetPassword);
 
 router.get("/", userController.getAllUsers); // workin but may delete later
 
-router.get("/getLeaderboard/page/:pageNum", userController.getLeaderboard); // TODO:
+router.get("/leaderboard", userController.getLeaderboard); // TODO:
 
 router.use(authController.protect);
 
