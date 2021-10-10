@@ -14,8 +14,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-// url/api/v1/users/getLeaderboard?page=1&sort=asc (length = 20)
-// TODO: still need to implement pagination and be sure to have the ranks be accurate on different pages
+// url/api/v1/users/getLeaderboard?page=1&sort=asc (limit = 20)
 exports.getLeaderboard = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 20;
@@ -29,6 +28,22 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
 
   const numUsers = await User.countDocuments();
 
+  // Getting current user's rank
+  // Get users that have >highScore OR (>currentScore AND =highScore)
+  const userRank =
+    (await User.find({
+      $or: [
+        { highScore: { $gt: req.user.highScore } },
+        {
+          $and: [
+            { highScore: { $eq: req.user.highScore } },
+            { currentScore: { $gt: req.user.currentScore } },
+          ],
+        },
+      ],
+    }).count()) + 1;
+
+  // Getting the leaderboard
   if (skip >= numUsers)
     return next(new AppError("This page does not exist", 404));
 
@@ -52,6 +67,7 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     page,
+    user: { userRank, user: req.user.username },
     results: leaderboardRanks.length,
     data: {
       leaderboard: leaderboardRanks,
