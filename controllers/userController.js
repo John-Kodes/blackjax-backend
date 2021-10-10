@@ -14,7 +14,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
-// url/api/v1/users/getLeaderboard?page=1&sort=asc (limit = 20)
+// url/api/v1/users/leaderboard?page=1&sort=asc (limit = 20)
 exports.getLeaderboard = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 20;
