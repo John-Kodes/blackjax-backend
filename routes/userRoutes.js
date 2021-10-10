@@ -11,11 +11,9 @@ router.get("/logout", authController.logout);
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
-router.get("/", userController.getAllUsers); // workin but may delete later
-
 router.use(authController.protect);
 
-router.get("/leaderboard", userController.getLeaderboard); // TODO: Add protection against parameter polution
+router.get("/leaderboard", userController.getLeaderboard);
 
 // update currentScore (conditionally update highScore)
 router.patch("/updateScore", userController.updateScore);

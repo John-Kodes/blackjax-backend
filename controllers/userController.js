@@ -2,18 +2,6 @@ const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
 const User = require("../models/userModel");
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: "success",
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
 // url/api/v1/users/leaderboard?page=1&sort=asc (limit = 20)
 exports.getLeaderboard = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;

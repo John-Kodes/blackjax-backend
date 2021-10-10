@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -16,6 +17,9 @@ const app = express();
 
 // Development logging
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+
+// Sets important security headers
+app.use(helmet());
 
 // RATE LIMITER
 const limiter = rateLimit({
