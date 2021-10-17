@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
@@ -14,6 +15,10 @@ const userRoutes = require("./routes/userRoutes");
 const app = express();
 
 // GLOBAL MIDDLEWARES ____________________
+
+// Setting view engine
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 // Development logging
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));

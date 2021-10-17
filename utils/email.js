@@ -1,5 +1,9 @@
 const nodemailer = require("nodemailer");
 
+// module.exports = class Email {
+
+// }
+
 // options will contain the email address where we want to send the email to, the subject line, email content, etc
 const sendEmail = async (options) => {
   // 1) Create a transporter. The transporter is a service that will actually send the email because it's not node js sending the email. It's just the service we define like Gmail.
