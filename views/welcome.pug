@@ -1,0 +1,17 @@
+extends baseEmail
+
+block content
+  p Hi #{firstName},
+  p Welcome to BlackJax, we're glad to have you 🎉🙏
+  p With this, you can now see how you place in the leaderboards
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Go to BlackJax
+  p If you find any bugs, be sure to contact me!
+  p - John Daniel, CEO
