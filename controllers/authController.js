@@ -118,32 +118,16 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-// roles is an array of arguments passed in. [admin, user]
-exports.restrictTo =
-  (...roles) =>
-  (req, res, next) => {
-    // We get the user data by first using .protect() middleware
-    if (!roles.includes(req.user.role))
-      next(new AppError("You do not have permission to run this action", 403));
-
-    // if the role is included to the permitted roles array, we move on to the next middleware
-    next();
-  };
-
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  // Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email });
   if (!user)
     return next(new AppError("There is no user with that email address.", 404));
 
   // Generate the random reset token
-  // We will create an instance method on the user Model since this has to do with the user data itself.
   const resetToken = user.createPasswordResetToken();
-  // saving the document after the modifications from the instance method
   await user.save({ validateBeforeSave: false });
 
   // 3) Send it to user's email
-  // resetURL: Ideally, the user can click on the email and do the request from there. That will work later for when we implement our dynamic website. For now, the user can copy the url to make it easier to do this request
   const resetURL = `${req.protocol}://${req.get(
     "host"
   )}/api/v1/users/resetPassword/${resetToken}`;
@@ -177,8 +161,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
 // Note: we grab the token from the URL of the api req which was emailed to the user
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  // 1) get user based on the resetToken
-  // we first get the resetToken then encrypt it so that we can compare that with the already encrypted version saved in the database
+  // get user based on the resetToken
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -190,25 +173,24 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  // 2) If token has not expired, and there is user, set the new password
+  // If token has not expired, and there is user, set the new password
   if (!user) return next(new AppError("Token is invalid or has expired"), 400);
   user.password = req.body.password;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
 
-  // This only modifies the document so we have to save the changes
   await user.save(); // validator makes sure that the password and passwordConfirm are the same
 
-  // 4) Log the user in, send JWT
+  // Log the user in, send JWT
   createSendToken(user, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  // 1) Get user from collection
+  // Get user from collection
   const user = await User.findById(req.user.id).select("+password");
   if (!user) return next(new AppError("user no existy"), 404);
 
-  // 2) Check if POSTed password is correct
+  // Check if POSTed password is correct
   if (!(await user.correctPassword(req.body.currentPassword)))
     return next(
       new AppError("Your password was incorrect, please try again"),
@@ -221,11 +203,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
       new AppError("New password cannot be the same as the old password!", 401)
     );
 
-  // 3) If so, update password
+  // If so, update password
   user.password = req.body.newPassword;
 
   await user.save();
 
-  // 4) Log user in, send JWT
+  // Log user in, send JWT
   createSendToken(user, 200, res);
 });
