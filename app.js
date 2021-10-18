@@ -15,6 +15,8 @@ const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
+app.enable("trust proxy");
+
 // GLOBAL MIDDLEWARES ____________________
 
 // Setting view engine
