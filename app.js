@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const compression = require("compression");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
@@ -46,6 +47,8 @@ app.use(xss()); // converts html symbols like <> to their HTML entities.
 
 // Prevent Parameter Pollution. Must be at the end of middleware
 app.use(hpp());
+
+app.use(compression());
 
 // API ROUTES: Mounting Routes ___________
 app.use("/api/v1/users", userRoutes);
