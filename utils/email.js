@@ -11,6 +11,7 @@ module.exports = class Email {
   }
 
   _newTransport() {
+    console.log("bruh", process.env.NODE_ENV);
     if (process.env.NODE_ENV === "production") {
       return nodemailer.createTransport({
         service: "SendGrid",
@@ -20,7 +21,6 @@ module.exports = class Email {
         },
       });
     }
-
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
@@ -41,7 +41,10 @@ module.exports = class Email {
 
     // Define the email options
     const mailOptions = {
-      from: this.from,
+      from:
+        process.env.NODE_ENV === "production"
+          ? process.env.SENDGRID_EMAIL_FROM
+          : this.from,
       to: this.to,
       subject,
       html,
