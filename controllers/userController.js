@@ -16,21 +16,6 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
 
   const numUsers = await User.countDocuments();
 
-  // Getting current user's rank
-  // Get users that have >highScore OR (>currentScore AND =highScore)
-  const userRank =
-    (await User.find({
-      $or: [
-        { highScore: { $gt: req.user.highScore } },
-        {
-          $and: [
-            { highScore: { $eq: req.user.highScore } },
-            { currentScore: { $gt: req.user.currentScore } },
-          ],
-        },
-      ],
-    }).count()) + 1;
-
   // Getting the leaderboard
   if (skip >= numUsers)
     return next(new AppError("This page does not exist", 404));
@@ -52,10 +37,29 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
     rank: findRank(i, numUsers),
   }));
 
+  // Getting current user's rank if logged in
+  // Get users that have >highScore OR (>currentScore AND =highScore)
+  let userRank;
+
+  if (req.user) {
+    userRank =
+      (await User.find({
+        $or: [
+          { highScore: { $gt: req.user.highScore } },
+          {
+            $and: [
+              { highScore: { $eq: req.user.highScore } },
+              { currentScore: { $gt: req.user.currentScore } },
+            ],
+          },
+        ],
+      }).count()) + 1;
+  }
+
   res.status(200).json({
     status: "success",
     page,
-    user: { userRank, user: req.user.username },
+    user: req.user ? { userRank, user: req.user.username } : undefined,
     results: leaderboardRanks.length,
     data: {
       leaderboard: leaderboardRanks,
