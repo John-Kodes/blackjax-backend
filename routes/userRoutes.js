@@ -17,7 +17,7 @@ router.use(authController.protect);
 
 router.get("/leaderboard", userController.getLeaderboard);
 
-// update currentScore (conditionally update highScore)
+//  update currentScore (conditionally update highScore)
 router.patch("/updateScore", userController.updateScore);
 
 router.patch("/updatePassword", authController.updatePassword);
