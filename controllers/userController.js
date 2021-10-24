@@ -60,7 +60,7 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
     status: "success",
     page,
     user: req.user ? { userRank, user: req.user.username } : undefined,
-    results: leaderboardRanks.length,
+    results: numUsers,
     data: {
       leaderboard: leaderboardRanks,
     },
