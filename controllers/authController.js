@@ -87,9 +87,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordChangedAt: req.body.passwordChangedAt,
   });
 
-  const url = process.env.BLACKJAX_URL;
-
-  await new Email(newUser, url).sendWelcome();
+  // Temporarily disabled for email limitation reasons
+  // const url = process.env.BLACKJAX_URL;
+  // await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, req, res);
 });
