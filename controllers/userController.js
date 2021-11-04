@@ -59,9 +59,15 @@ exports.getLeaderboard = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     page,
-    user: req.user ? { userRank, user: req.user.username } : undefined,
     results: numUsers,
     data: {
+      user: req.user
+        ? {
+            userRank,
+            user: req.user.username,
+            _id: req.user._id,
+          }
+        : undefined,
       leaderboard: leaderboardRanks,
     },
   });
