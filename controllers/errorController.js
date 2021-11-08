@@ -53,13 +53,15 @@ const sendErrorProd = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error"; // statuscode 500: error, statuscode 400: fail
-
+  console.log(err);
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
     // To test, make sure you start the server in production with the npm script "start:prod"
+    // eslint-disable-next-line node/no-unsupported-features/es-syntax
     let error = { ...err };
     error.name = err.name;
+    error.message = err.message;
 
     if (error.name === "CastError") error = handleCastErrorDB(error);
     if (err.code === 11000) error = handleDuplicateFieldsDB(error);

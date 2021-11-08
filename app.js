@@ -28,7 +28,9 @@ app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
 
 // Development logging
-if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 // Sets important security headers
 app.use(helmet());
