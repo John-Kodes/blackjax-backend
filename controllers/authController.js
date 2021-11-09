@@ -199,7 +199,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // get user based on the resetToken
   const hashedToken = crypto
     .createHash("sha256")
-    .update(req.body.resetToken)
+    .update(req.params.token)
     .digest("hex");
 
   const user = await User.findOne({
