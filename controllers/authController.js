@@ -79,6 +79,11 @@ exports.isLoggedIn = catchAsync(async (req, res, next) => {
 });
 
 exports.signup = catchAsync(async (req, res, next) => {
+  // validator
+  const foundUser = await User.findOne({ username: req.body.username });
+  if (foundUser !== null)
+    return next(new AppError("Username already exists. Please try again", 400));
+
   const newUser = await User.create({
     username: req.body.username,
     color: req.body.color,
