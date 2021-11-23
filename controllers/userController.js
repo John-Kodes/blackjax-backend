@@ -123,7 +123,28 @@ exports.updateMe = catchAsync(async (req, res, next) => {
       )
     );
 
+  if (req.body.currentScore)
+    return next(
+      new AppError(
+        "This route is not for password updates. Please use /updateScore",
+        400
+      )
+    );
+
   const { username, color } = req.body;
+
+  // validators
+  const foundUser = await User.findOne({ username });
+  if (foundUser !== null)
+    return next(new AppError("Username already exists. Please try again", 400));
+
+  if (color[0] !== "#" || color.length < 6)
+    return next(
+      new AppError(
+        "Invalid color. Must be in standard hex format. Please try again",
+        400
+      )
+    );
 
   const updatedUser = await User.findByIdAndUpdate(
     req.user._id,
@@ -133,7 +154,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "success",
-    data: { updatedUser },
+    data: { user: updatedUser },
   });
 });
 
