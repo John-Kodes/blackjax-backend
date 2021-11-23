@@ -24,6 +24,7 @@ const userSchema = mongoose.Schema({
     type: String,
     enum: ["guest", "user", "admin"],
     default: "user",
+    select: false,
   },
   username: {
     type: String,
@@ -41,7 +42,7 @@ const userSchema = mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-    select: false, // hidden when queried
+    select: false,
   },
   currentScore: {
     type: Number,
@@ -55,8 +56,14 @@ const userSchema = mongoose.Schema({
     type: Date,
     select: false,
   },
-  passwordResetToken: String,
-  passwordResetExpires: Date,
+  passwordResetToken: {
+    type: String,
+    select: false,
+  },
+  passwordResetExpires: {
+    type: Date,
+    select: false,
+  },
 });
 
 //// MIDDLEWARE ////
