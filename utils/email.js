@@ -7,7 +7,7 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.username;
     this.url = url;
-    this.from = `John Daniel <${process.env.EMAIL_FROM}>`;
+    this.from = `BlackJax`;
   }
 
   _newTransport() {
@@ -20,6 +20,7 @@ module.exports = class Email {
         },
       });
     }
+
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
