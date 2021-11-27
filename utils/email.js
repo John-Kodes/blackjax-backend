@@ -7,7 +7,7 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.username;
     this.url = url;
-    this.from = `BlackJax`;
+    this.from = `BlackJax <${process.env.SENDGRID_EMAIL_FROM}>`;
   }
 
   _newTransport() {
